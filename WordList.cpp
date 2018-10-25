@@ -154,7 +154,7 @@ void WordList::transform_TaggedBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd)
 void WordList::transform_ESRBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd)
 {
 	MEDDLY::forest* esrbdd_forest = d->createForest(false, MEDDLY::forest::BOOLEAN,
-				MEDDLY::forest::TAGGED, MEDDLY::forest::policies(false));
+				MEDDLY::forest::ESR, MEDDLY::forest::policies(false));
 	MEDDLY::dd_edge esrbdd(esrbdd_forest);
 	MEDDLY::apply(MEDDLY::COPY, bdd, esrbdd);
 	cout << "ESRBDD Nodes: " << esrbdd.getNodeCount() << endl;
