@@ -7,22 +7,26 @@
 #include <climits>
 
 WordList::WordList(string fname, EncodingMethod em, CharSet cs)
-	: _fname(fname), _num_words(0), _max_length(0)
+	: _fname(fname), _num_words(0), _min_length(INT_MAX), _max_length(0)
 {
 	ifstream infile(_fname);
 	unordered_set<char> char_set;
 	string line;
 	while (getline(infile, line)) {
+		_min_length = min(_min_length, (int) line.size());
 		_max_length = max(_max_length, (int) line.size());
 		_num_words++;
 		for (char ch : line) {
-			char_set.emplace(ch);
+			if (ch > 0) {
+				char_set.emplace(ch);
+			}
 		}
 	}
 	infile.close();
 
 	cout << "File: " << _fname << endl;
 	cout << "#Words: " << _num_words << endl;
+	cout << "MinLength: " << _min_length << endl;
 	cout << "MaxLength: " << _max_length << endl;
 
 	// Build char set

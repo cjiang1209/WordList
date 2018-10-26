@@ -13,6 +13,7 @@ class WordList {
 private:
 	string _fname;
 	int _num_words;
+	int _min_length;
 	int _max_length;
 
 	Encoding* _encoding;

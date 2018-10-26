@@ -42,6 +42,11 @@ void BinaryEncoding::encode(string word, int* arr) const
 {
 	int i = 0;
 	for (char ch : word) {
+		if (ch < 0) {
+			// Non-ASCII character
+			ch = char(0);
+		}
+
 		const auto search = _char_map.find(ch);
 		assert(search != _char_map.end());
 
@@ -52,9 +57,17 @@ void BinaryEncoding::encode(string word, int* arr) const
 			i++;
 		}
 	}
-	int length = minterm_length();
-	for (; i < length; i++) {
-		arr[i] = 0;
+
+	// Padding
+	const auto null_search = _char_map.find(char(0));
+	assert(null_search != _char_map.end());
+	for (int k = word.size(); k < _length; k++) {
+		int value = null_search->second;
+		for (int j = 0; j < _bits_per_char; j++) {
+			arr[i] = (value & 1);
+			value >>= 1;
+			i++;
+		}
 	}
 }
 
@@ -76,20 +89,24 @@ int OneHotEncoding::minterm_length() const
 
 void OneHotEncoding::encode(string word, int* arr) const
 {
+	std::fill_n(arr, minterm_length(), 0);
+
 	for (char ch : word) {
-		std::fill_n(arr, _char_map.size(), 0);
+		if (ch < 0) {
+			// Non-ASCII character
+			ch = char(0);
+		}
 
 		const auto search = _char_map.find(ch);
 		assert(search != _char_map.end());
-		int value = search->second;
-		arr[value] = 1;
+		arr[search->second] = 1;
 		arr += _char_map.size();
 	}
 
-	const auto null_search = _char_map.find(0);
+	// Padding
+	const auto null_search = _char_map.find(char(0));
 	assert(null_search != _char_map.end());
 	for (int i = word.size(); i < _length; i++) {
-		std::fill_n(arr, _char_map.size(), 0);
 		arr[null_search->second] = 1;
 		arr += _char_map.size();
 	}
