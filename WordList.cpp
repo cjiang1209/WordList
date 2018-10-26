@@ -75,18 +75,24 @@ void WordList::build()
 	int** minterms = new int*[_num_words];
 	int minterm_length = _encoding->minterm_length();
 
+	vector<string> words;
+
 	ifstream infile(_fname);
 	for (int i = 0; i < _num_words; i++) {
 		string line;
 		getline(infile, line);
+		words.push_back(line);
+	}
+	infile.close();
 
+	std::sort(words.begin(), words.end());
+	for (int i = 0; i < _num_words; i++) {
 		minterms[i] = new int[minterm_length + 1];
 		minterms[i][0] = 0;
-		_encoding->encode(line, &minterms[i][1]);
+		_encoding->encode(words[i], &minterms[i][1]);
 
 		std::reverse(&minterms[i][1] , &minterms[i][minterm_length + 1]);
 	}
-	infile.close();
 
 //	for (int i = 0; i < _num_words; i++) {
 //		for (int j = 1; j <= minterm_length; j++) {
