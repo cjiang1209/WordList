@@ -168,4 +168,20 @@ void WordList::transform_ESRBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd)
 	MEDDLY::dd_edge esrbdd(esrbdd_forest);
 	MEDDLY::apply(MEDDLY::COPY, bdd, esrbdd);
 	cout << "ESRBDD Nodes: " << esrbdd.getNodeCount() << endl;
+
+	// Count the reduction rules
+    long* counts = new long[5];
+    MEDDLY::node_handle node = esrbdd.getNode();
+    dynamic_cast<MEDDLY::expert_forest*>(esrbdd_forest)->countEdgeLabels(&node, 1, counts);
+    long ev = -1;
+    esrbdd.getEdgeValue(ev);
+    counts[ev]++;
+
+    std::cout << "BLANK: " << counts[0] << std::endl;
+    std::cout << "FULL: " << counts[1] << std::endl;
+    std::cout << "ZERO: " << counts[2] << std::endl;
+    std::cout << "ONE: " << counts[3] << std::endl;
+    std::cout << "FULL(FALSE): " << counts[4] << std::endl;
+
+    delete[] counts;
 }
