@@ -23,9 +23,10 @@ public:
 	~WordList();
 
 	void build();
+	void transform_QBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd);
 	void transform_CBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd);
 	void transform_ZDD_and_CZDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd);
-	void transform_TaggedBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd);
+	void transform_TBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd);
 	void transform_ESRBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd);
 };
 

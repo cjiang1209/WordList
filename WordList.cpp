@@ -114,9 +114,10 @@ void WordList::build()
 	bdd_forest->createEdge(minterms, _num_words, bdd);
 	cout << "BDD Nodes: " << bdd.getNodeCount() << endl;
 
+	transform_QBDD(d, bdd);
 	transform_CBDD(d, bdd);
 	transform_ZDD_and_CZDD(d, bdd);
-	transform_TaggedBDD(d, bdd);
+	transform_TBDD(d, bdd);
 	transform_ESRBDD(d, bdd);
 
 	// Clean up
@@ -124,6 +125,17 @@ void WordList::build()
 		delete[] minterms[i];
 	}
 	delete[] minterms;
+}
+
+void WordList::transform_QBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd)
+{
+	MEDDLY::forest::policies p(false);
+	p.setQuasiReduced();
+	MEDDLY::forest* qbdd_forest = d->createForest(false, MEDDLY::forest::BOOLEAN,
+			MEDDLY::forest::MULTI_TERMINAL, p);
+	MEDDLY::dd_edge qbdd(qbdd_forest);
+	MEDDLY::apply(MEDDLY::COPY, bdd, qbdd);
+	cout << "QBDD Nodes: " << qbdd.getNodeCount() << endl;
 }
 
 void WordList::transform_CBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd)
@@ -152,13 +164,13 @@ void WordList::transform_ZDD_and_CZDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd)
 	cout << "CZDD Nodes: " << czdd.getNodeCount() << endl;
 }
 
-void WordList::transform_TaggedBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd)
+void WordList::transform_TBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd)
 {
-	MEDDLY::forest* taggedbdd_forest = d->createForest(false, MEDDLY::forest::BOOLEAN,
+	MEDDLY::forest* tbdd_forest = d->createForest(false, MEDDLY::forest::BOOLEAN,
 				MEDDLY::forest::TAGGED, MEDDLY::forest::policies(false));
-	MEDDLY::dd_edge taggedbdd(taggedbdd_forest);
-	MEDDLY::apply(MEDDLY::COPY, bdd, taggedbdd);
-	cout << "TaggedBDD Nodes: " << taggedbdd.getNodeCount() << endl;
+	MEDDLY::dd_edge tbdd(tbdd_forest);
+	MEDDLY::apply(MEDDLY::COPY, bdd, tbdd);
+	cout << "TBDD Nodes: " << tbdd.getNodeCount() << endl;
 }
 
 void WordList::transform_ESRBDD(MEDDLY::domain* d, MEDDLY::dd_edge& bdd)
